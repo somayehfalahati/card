@@ -81,8 +81,10 @@ def run():
             r = render.Render(config, fontsPath, imagesPath, outputDirPath)
 
             outputFiles = []
-
+            # خواندن اطلاعات از اکسل
             data = pd.read_excel("%s/data.xlsx" % b['data_file_path'], dtype=str)
+
+            # تولید تمام عکسها بر اساس اطلاعات خوانده شده از اکسل
             for row in data.itertuples(index=False):
                 for v in r.render(row).values():
                     outputFiles.append((v['path'], v['fileName']))
@@ -91,7 +93,7 @@ def run():
                 cursor.execute(db.query_string('UPDATE [Batches] SET processed_item_count += 1 WHERE id = %d'), (b['id'],))
                 conn.commit()
                 cursor.close()
-
+            # فشرده کردن عکسهای تولید شده در یک فایل فشرده
             with ZipFile("%s/%s.zip" % (outputBasePath, secureBatchName), 'w') as zipObj:
                 for fp, fn in outputFiles:
                     zipObj.write(fp, arcname=fn)
