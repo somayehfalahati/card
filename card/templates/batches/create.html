@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}دسته جدید از قالب {{ t['name'] }}{% endblock %}
+{% block header %}دسته جدید از قالب {{ t['name'] }}{% endblock %}
+{% block content %}
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('batches.create', tid=t['id']) }}">
+        <div class="mb-3">
+            <label class="form-label" for="name">نام</label>
+            <input type="text" name="name" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="data">داده</label>
+            <input type="file" name="data" id="dataFileToUpload" class="form-control"/>
+            <div class="form-text">فقط فایل های با اکسل ورژن ۲۰۰۷ به بالا با فرمت .xlsx قابل قبول است.</div>
+        </div>
+        {% if hasImages %}
+        <div class="mb-3">
+            <label class="form-label" for="images">تصاویر</label>
+            <input type="file" name="images" id="imagesFileToUpload" class="form-control">
+            <div class="form-text">فقط فایل های با فرمت .zip که عکسها در مسیر نخستین فایل فشرده شده باشد قابل قبول است. لطفا از قرار دادن عکسها در یک پوشه و فشرده کردن آن خود داری کنید</div>
+        </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">ثبت</button>
+    </form>
+{% endblock %}

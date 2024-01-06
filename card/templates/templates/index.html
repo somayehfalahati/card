@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}قالبها{% endblock %}
+{% block header %}قالبها{% endblock %}
+{% block actions %}
+<a class="btn btn-success" href="{{ url_for('templates.create') }}">قالب جدید</a>{% endblock %}
+{% block content %}
+<div class="table-responsive">
+    <table class="table table-hover table-bordered border-primary">
+        <thead>
+            <tr>
+                <td scope="col">قالب</td>
+                <td scope="col">عملیات</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in templates %}
+                <tr>
+                    <td>{{ t['name'] }}</td>
+                    <td>
+                        <div class="btn-group me-2">
+                            <a class="btn btn-success" href="{{ url_for('batches.create', tid=t['id']) }}">دسته جدید</a>                            
+                            <a class="btn btn-info" href="{{ url_for('templates.view', tid=t['id']) }}">نمایش</a>                            
+                            <a class="btn btn-warning" href="{{ url_for('templates.update', tid=t['id']) }}">ویرایش</a>                            
+                            <a class="btn btn-danger" href="{{ url_for('templates.delete', tid=t['id']) }}" onclick="return confirm('آیا مطمئن هستید?')">حذف</a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

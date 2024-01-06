@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}دسته ها{% endblock %}
+{% block header %}دسته ها{% endblock %}
+{% block content %}
+<div class="table-responsive">
+    <table class="table table-hover table-bordered border-primary">
+        <thead>
+            <tr>
+                <td scope="col">دسته</td>
+                <td scope="col">قالب</td>
+                <td scope="col">وضعیت</td>
+                <td scope="col">تعداد انجام شده</td>
+                <td scope="col">زمان ساخت</td>
+                <td scope="col">زمان آغاز فرآیند</td>
+                <td scope="col">زمان پایان</td>
+                <td scope="col">دریافت</td>
+                <td scope="col">عملیات</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in batches %}
+                <tr>
+                    <td>{{ b['name'] }}</td>
+                    <td><a href="{{ url_for('templates.view', tid=b['template_id']) }}">{{ b['template_name'] }}</a></td>
+                    <td>{{ b['status'] }}</td>
+                    <td>{{ b['processed_item_count'] }}</td>
+                    <td>{{ b['created_at'] }}</td>
+                    <td>{{ b['picked_at'] }}</td>
+                    <td>{{ b['finished_at'] }}</td>
+                    <td>
+                        {% if b.is_ready %}
+                            <a href="{{ url_for('batches.download', bid=b['id']) }}">{{ b['file_name'] }}</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group me-2">
+                            <a class="btn btn-danger" href="{{ url_for('batches.delete', bid=b['id']) }}" onclick="return confirm('آیا مطمئن هستید?')">حذف</a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}کدگذار Base64{% endblock %}
+{% block header %}کدگذار Base64{% endblock %}
+
+{% block content %}
+<div>
+    <div class="mb-3">
+      <label for="file" class="form-label">فایل تصویر</label>
+      <input name="file" type="file" class="form-control" onchange="encodeImageFileAsURL(this)"/>
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary" onclick="copyTextToClipboard()">کپی</button>
+    </div>          
+    <div class="mb-3">
+        <label for="base64encode" class="form-label">کد شده به Base64</label>
+        <textarea name="base64encode" id="base64encode" class="form-control" rows="30"></textarea>
+    </div>
+</div>
+<script>
+  function encodeImageFileAsURL(element) {
+    let file = element.files[0];
+    let reader = new FileReader();
+    reader.onloadend = function() {
+      document.getElementById("base64encode").textContent = reader.result.split(",")[1];
+    }
+    reader.readAsDataURL(file);
+  }
+  function fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+    
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+  
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+  
+    try {
+      var successful = document.execCommand('copy');
+      var msg = successful ? 'successful' : 'unsuccessful';
+      console.log('Fallback: Copying text command was ' + msg);
+    } catch (err) {
+      console.error('Fallback: Oops, unable to copy', err);
+    }
+  
+    document.body.removeChild(textArea);
+  }
+  function copyTextToClipboard() {
+    text = document.getElementById("base64encode").textContent
+    if (!navigator.clipboard) {
+      fallbackCopyTextToClipboard(text);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+  }
+</script>
+{% endblock %}

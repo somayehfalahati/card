@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}کاربر جدید{% endblock %}
+{% block header %}کاربر جدید{% endblock %}
+{% block content %}
+<form method="post" action="{{ url_for('users.create') }}">
+    <div class="mb-3">
+        <label class="form-label" for="national_code">کدملی</label>
+        <input type="text" class="form-control" name="national_code"/>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="first_name">نام</label>
+        <input type="text" class="form-control" name="first_name"/>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="last_name">نام خانوادگی</label>
+        <input type="text" class="form-control" name="last_name"/>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="role">نقش</label>
+        <select class="form-select" name="role">
+            {% for r in roles %}
+            <option value="{{ r['id'] }}">{{ r['name'] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">ثبت
+</form>
+{% endblock %}

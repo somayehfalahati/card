@@ -1,0 +1,13 @@
+.vscode/
+venv/
+**/.DS_Store
+.DS_Store
+
+assets/output/**
+assets/uploads/**
+
+mssql-data/
+
+__pycache__
+
+card.db

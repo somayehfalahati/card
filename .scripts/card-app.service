@@ -1,0 +1,11 @@
+[Unit]
+Description=org Card app service
+After=multi-user.target
+
+[Service]
+WorkingDirectory=WorkingDirectoryPlaceholder
+ExecStart=flask --app card run --reload
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
