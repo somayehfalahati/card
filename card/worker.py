@@ -77,6 +77,7 @@ def run():
             os.makedirs(outputDirPath)
 
             print(fontsPath)
+            # با دادن اطلاعات قالب و مسیر فونت ها و مسیر عکسها و مسیر خروجی  برنامه پردازشگر را آماده سازی میکند
             r = render.Render(config, fontsPath, imagesPath, outputDirPath)
 
             outputFiles = []
