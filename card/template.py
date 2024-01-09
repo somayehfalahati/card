@@ -32,6 +32,13 @@ def view(tid):
     cursor.execute(db.query_string('SELECT * FROM [Templates] WHERE id = %d AND [deleted_at] is NULL'), (tid,))
     t = cursor.fetchone()
     cursor.close()
+    txt=t['definition']
+    #txt=txt.replace(b'\n' ,b'"<br/>"')
+    #txt=txt.replace(b'\r\r\n' ,b'\r\n')
+    nt={}
+    nt['id']=t['id']
+    nt['definition']=txt
+    
 
     return render_template('templates/view.html', t=t)
 
@@ -71,7 +78,7 @@ def create():
         #    return 'Please specify an other name', 400
         file="%s/%s" % (basePath , secure_filename(temFile.filename))
         temFile.save(file)
-        with open(file, 'rb') as f:
+        with open(file, 'r') as f:
             temp_file = f.read()
 
         conn = db.get_db()
@@ -92,25 +99,48 @@ def create():
 def update(tid):
     if request.method == 'POST':
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if 'file' in request.files:
+            temFile = request.files['file']
+            print(temFile.filename)
+            fileNameLen=len(temFile.filename)
+        else:
+            fileNameLen=0
+        if 'file' not in request.files or fileNameLen==0:
+            t = {}
+            t['id'] = tid
+            t['name']=request.form['name']
+            t['definition']=''
+            t['updated_at']=''
+            return render_template('templates/update.html', t=t ,mess= 'لطفا فایل عکس را بارگذاری نمایید!')
+        else:
+            basePath = "%s/%s" % (current_app.config['BASE_UPLOAD_PATH'], "template"  )
+            print("basePath: %s" % basePath)
+            if not os.path.exists(basePath):
+                os.makedirs(basePath)
+            #else:
+            #    return 'Please specify an other name', 400
+            file="%s/%s" % (basePath , secure_filename(temFile.filename))
+            temFile.save(file)
+            with open(file, 'r') as f:
+                temp_file = f.read()
 
-        print(request.form.keys())
+            print(request.form.keys())
 
-        conn = db.get_db()
-        cursor = conn.cursor()
-        cursor.execute(db.query_string(
-            'UPDATE [Templates] SET [name] = %s, [definition] = %s, [updated_at] = %s WHERE id = %d AND [deleted_at] is NULL'),
-            (request.form['name'], request.form['definition'], current_time, tid)
-        )
-        conn.commit()
-        cursor.close()
-        return redirect(url_for('templates.index'))
+            conn = db.get_db()
+            cursor = conn.cursor()
+            cursor.execute(db.query_string(
+                'UPDATE [Templates] SET [name] = %s, [definition] = %s, [updated_at] = %s WHERE id = %d AND [deleted_at] is NULL'),
+                (request.form['name'], temp_file, current_time, tid)
+            )
+            conn.commit()
+            cursor.close()
+            return redirect(url_for('templates.index'))
     
     conn = db.get_db()
     cursor = conn.cursor()
     cursor.execute(db.query_string('SELECT * FROM [Templates] WHERE id = %d'), (tid,))
     t = cursor.fetchone()
     cursor.close()
-
     return render_template('templates/update.html', t=t)
 
 @bp.get('/encoder')

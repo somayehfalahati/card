@@ -2,7 +2,7 @@
 {% block title %}ویرایش قالب {{ t['name'] }}{% endblock %}
 {% block header %}ویرایش قالب {{ t['name'] }}{% endblock %}
 {% block content %}
-<form method="post" action="{{ url_for('templates.update', tid=t['id']) }}">
+<form method="post"  enctype="multipart/form-data"  action="{{ url_for('templates.update', tid=t['id']) }}">
     <div class="mb-3">
         <label class="form-label" for="name">نام</label>
         <input type="text" class="form-control" name="name" value="{{ t['name'] }}"/>
@@ -16,7 +16,9 @@
         <label for="file" class="form-label">فایل قالب</label>
         <input name="file" type="file" class="form-control" onchange="encodeImageFileAsURL(this)"/>
     </div>   
-
+    {% if mess %}
+    <div class="alert alert-danger"><a >{{ mess }}</a></div>
+    {% endif %}
     <button type="submit" class="btn btn-primary">ثبت</button>
 </form>
 {% endblock %}

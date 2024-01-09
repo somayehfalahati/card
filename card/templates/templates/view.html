@@ -2,10 +2,15 @@
 {% block title %}View Template {{ t['name'] }}{% endblock %}
 {% block header %}View Template {{ t['name'] }}{% endblock %}
 {% block actions %}
+
+
 <a class="btn btn-success" href="{{ url_for('batches.create', tid=t['id']) }}">دسته جدید</a>
 <a class="btn btn-warning" href="{{ url_for('templates.update', tid=t['id']) }}">ویرایش</a>
 <a class="btn btn-danger" href="{{ url_for('templates.delete', tid=t['id']) }}" onclick="return confirm('آیا مطمئن هستید?')">حذف</a>
 {% endblock %}
 {% block content %}
-    <pre><code>{{ t['definition'] }}</code></pre>
+    <pre>
+        <!-- <code>{{ t['definition'] }}</code> -->
+        <textarea name="definition" class="form-control" rows="20" style="white-space: nowrap;">{{ t['definition'] }}</textarea>
+    </pre>
 {% endblock %}

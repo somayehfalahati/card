@@ -86,11 +86,13 @@ def run():
 
             # تولید تمام عکسها بر اساس اطلاعات خوانده شده از اکسل
             for row in data.itertuples(index=False):
+                print(row)
                 for v in r.render(row).values():
+                    print(v)
                     outputFiles.append((v['path'], v['fileName']))
                 
                 cursor = conn.cursor()
-                cursor.execute(db.query_string('UPDATE [Batches] SET processed_item_count += 1 WHERE id = %d'), (b['id'],))
+                cursor.execute(db.query_string('UPDATE [Batches] SET processed_item_count =processed_item_count+ 1 WHERE id = %d'), (b['id'],))
                 conn.commit()
                 cursor.close()
             # فشرده کردن عکسهای تولید شده در یک فایل فشرده

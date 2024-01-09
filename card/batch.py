@@ -25,17 +25,18 @@ def index():
             ,b.[created_at]
             ,[picked_at]
             ,[finished_at]
+            ,(case when status='FINISHED' then 1 else 0 end) as is_ready
         FROM [Batches] b
         INNER JOIN [Templates] t on b.template_id = t.id
         WHERE b.[deleted_at] is NULL and t.[deleted_at] is NULL
     """))
     batches = cursor.fetchall()
     
-    dictrows = [dict(row) for row in cursor]
-    for r in dictrows:
-        r['file_name'] = secure_filename(batches[i]['name']) + ".zip"
-        r['is_ready'] = batches[i]['status'].strip() == "FINISHED"
-    cursor.close()
+    #dictrows = [dict(row) for row in cursor]
+    #for r in dictrows:
+    #    r['file_name'] = secure_filename(batches[i]['name']) + ".zip"
+    #    r['is_ready'] = batches[i]['status'].strip() == "FINISHED"
+    #cursor.close()
 
         
     #for i in range(len(batches)):
@@ -43,6 +44,24 @@ def index():
     #    batches[i]['is_ready'] = batches[i]['status'].strip() == "FINISHED"
 
     return render_template('batches/index.html', batches=batches)
+
+
+@bp.get('/<int:bid>/reProcess')
+@login_required
+def reProcess(bid):
+    if bid is None:
+        return 'Please specify a template'
+
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    conn = db.get_db()
+    cursor = conn.cursor()
+    cursor.execute(db.query_string("UPDATE [Batches] SET [finished_at]=NULL,[picked_at]=NULL,[status] ='CREATED',[processed_item_count]=0  WHERE id = :ss AND [deleted_at] is NULL"), {'ss':bid})
+    conn.commit()
+    cursor.close()
+    
+    return redirect(url_for('batches.index'))
+
 
 # این تابع صفحه ایجاد دسته را نمایش داده و عملیات ثبت را انجام می دهد
 @bp.route('/create/<int:tid>', methods=['GET', 'POST'])
